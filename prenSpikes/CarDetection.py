@@ -1,4 +1,7 @@
-import PIL.Image
+from cv2 import *
 
-i = PIL.Image.open("../resources/parking-car.png")
-i.show()
+i = imread('../resources/parking-car.png')
+
+imshow("MyWindow", i)
+waitKey(0)
+destroyAllWindows()
