@@ -10,8 +10,8 @@ stainsInBlack = 'stainsInBlack'
 
 def show_image(windowname, img):
     cv2.imshow(windowname, img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
 
 def save_img(path, img):
@@ -49,14 +49,17 @@ def run():
         stainsInBlack: '../resources/targetWithColorStainsInBlackAreas.png'
     }
 
-    path = images[stainsInBlackAndWhite]
+    path = images[stainsInBlackAndWhite]    # choose which base image to use
     img = cv2.imread(path)
+    img = invert_image(img)     # comment this line if you want to have the not inverted image, mask etc.
     show_image('base', img)
+    create_and_print_mask_etc(img)
 
+
+def create_and_print_mask_etc(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     zero_matrix = np.array([0, 0, 0])
     upper_black = np.array([30, 30, 30])
-    max_matrix = np.array([255, 255, 255])
 
     mask = cv2.inRange(hsv, zero_matrix, upper_black)
     show_image('mask', mask)
@@ -69,6 +72,10 @@ def run():
 
     inverted_masked_image = invert_image(masked_image)
     show_image('inverted masked image', inverted_masked_image)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     run()
