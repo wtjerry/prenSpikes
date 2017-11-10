@@ -78,22 +78,27 @@ def create_and_print_mask_etc(img):
 
 
 if __name__ == '__main__':
-    img = cv2.imread('../resources/blackWhiteTarget.png')
-    img = cv2.resize(img, (500, 500))
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cap = cv2.VideoCapture('../resources/slow.h264')
+    while cap.isOpened():
+        ret, img = cap.read()
+        if not ret:
+            break
 
-    ret, thresh = cv2.threshold(gray, 127, 255, 0)
-    img2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        img = cv2.resize(img, (500, 500))
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    for cnt in contours:
-        if cv2.contourArea(cnt) > 5000:  # remove small areas like noise etc
-            hull = cv2.convexHull(cnt)  # find the convex hull of contour
-            hull = cv2.approxPolyDP(hull, 0.1 * cv2.arcLength(hull, True), True)
-            if len(hull) == 4:
-                cv2.drawContours(img, [hull], 0, (0, 255, 0), 2)
+        ret, thresh = cv2.threshold(gray, 127, 255, 0)
+        img2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    cv2.imshow('img', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+        for cnt in contours:
+            if cv2.contourArea(cnt) > 5000:  # remove small areas like noise etc
+                hull = cv2.convexHull(cnt)  # find the convex hull of contour
+                hull = cv2.approxPolyDP(hull, 0.1 * cv2.arcLength(hull, True), True)
+                if len(hull) == 4:
+                    cv2.drawContours(img, [hull], 0, (0, 255, 0), 2)
 
-    # run()
+        cv2.imshow('img', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        # run()
