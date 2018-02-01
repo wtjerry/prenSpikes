@@ -78,7 +78,7 @@ def create_and_print_mask_etc(img):
 
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture('../resources/slow.h264')
+    cap = cv2.VideoCapture('../resources/cable.h264')
     while cap.isOpened():
         ret, img = cap.read()
         if not ret:
@@ -90,15 +90,20 @@ if __name__ == '__main__':
         ret, thresh = cv2.threshold(gray, 127, 255, 0)
         img2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
+        counter = 0
         for cnt in contours:
             if cv2.contourArea(cnt) > 5000:  # remove small areas like noise etc
                 hull = cv2.convexHull(cnt)  # find the convex hull of contour
                 hull = cv2.approxPolyDP(hull, 0.1 * cv2.arcLength(hull, True), True)
                 if len(hull) == 4:
                     cv2.drawContours(img, [hull], 0, (0, 255, 0), 2)
+                    found = True
+                    counter += 1
 
-        cv2.imshow('img', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if found:
+            cv2.imshow('img ' + str(counter), img)
 
-        # run()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    # run()
